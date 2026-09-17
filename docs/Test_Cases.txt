@@ -1,0 +1,120 @@
+# COREBANK-JAVA-PROJECT
+
+## Test Cases
+
+### 1. Authentication Testing
+
+| Test ID | Test Case                             | Input            | Expected Result          | Status |
+| ------- | ------------------------------------- | ---------------- | ------------------------ | ------ |
+| TC01    | Customer login with valid credentials | alok / alok123   | Customer menu displayed  | PASS   |
+| TC02    | Admin login with valid credentials    | admin / admin123 | Admin menu displayed     | PASS   |
+| TC03    | Invalid username                      | Invalid username | Login rejected           | PASS   |
+| TC04    | Invalid password                      | Wrong password   | Login rejected           | PASS   |
+| TC05    | Empty username/password               | Blank input      | Validation/error message | PASS   |
+
+### 2. Account Testing
+
+| Test ID | Test Case                   | Input                             | Expected Result           | Status |
+| ------- | --------------------------- | --------------------------------- | ------------------------- | ------ |
+| TC06    | Check balance               | Account 1001001                   | Current balance displayed | PASS   |
+| TC07    | Check valid account         | 1001002                           | Account details displayed | PASS   |
+| TC08    | Invalid account number      | Non-existing account              | Account not found message | PASS   |
+| TC09    | Unauthorized account access | Account not belonging to customer | Access denied             | PASS   |
+
+### 3. Deposit Testing
+
+| Test ID | Test Case             | Input                  | Expected Result          | Status |
+| ------- | --------------------- | ---------------------- | ------------------------ | ------ |
+| TC10    | Valid deposit         | Positive amount        | Balance increases        | PASS   |
+| TC11    | Zero deposit          | 0                      | Invalid amount rejected  | PASS   |
+| TC12    | Negative deposit      | Negative amount        | Invalid amount rejected  | PASS   |
+| TC13    | Invalid deposit input | Text instead of number | Input validation message | PASS   |
+
+### 4. Withdrawal Testing
+
+| Test ID | Test Case           | Input                       | Expected Result            | Status |
+| ------- | ------------------- | --------------------------- | -------------------------- | ------ |
+| TC14    | Valid withdrawal    | Amount within balance       | Balance decreases          | PASS   |
+| TC15    | Excess withdrawal   | Amount greater than balance | Insufficient balance error | PASS   |
+| TC16    | Zero withdrawal     | 0                           | Invalid amount rejected    | PASS   |
+| TC17    | Negative withdrawal | Negative amount             | Invalid amount rejected    | PASS   |
+
+### 5. Fund Transfer Testing
+
+| Test ID | Test Case                          | Input                              | Expected Result                 | Status |
+| ------- | ---------------------------------- | ---------------------------------- | ------------------------------- | ------ |
+| TC18    | Valid transfer                     | 1001001 → 1001002                  | Both balances updated correctly | PASS   |
+| TC19    | Transfer with insufficient balance | Amount greater than source balance | Transfer rejected               | PASS   |
+| TC20    | Transfer to same account           | Same source/destination            | Transfer rejected               | PASS   |
+| TC21    | Transfer to invalid account        | Non-existing destination           | Transfer rejected               | PASS   |
+| TC22    | Transfer from frozen account       | Frozen source account              | Transfer rejected               | PASS   |
+
+### 6. Transaction History Testing
+
+| Test ID | Test Case                 | Expected Result                               | Status |
+| ------- | ------------------------- | --------------------------------------------- | ------ |
+| TC23    | View transaction history  | Previous transactions displayed               | PASS   |
+| TC24    | Verify transaction type   | TRANSFER displayed correctly                  | PASS   |
+| TC25    | Verify transaction amount | Correct amount displayed                      | PASS   |
+| TC26    | Verify transaction status | SUCCESS displayed for successful transactions | PASS   |
+
+### 7. Interest Testing
+
+| Test ID | Test Case                         | Input                          | Expected Result               | Status |
+| ------- | --------------------------------- | ------------------------------ | ----------------------------- | ------ |
+| TC27    | Calculate savings interest        | Valid annual rate              | Interest calculated correctly | PASS   |
+| TC28    | Apply savings interest            | Valid savings account and rate | Interest added to balance     | PASS   |
+| TC29    | Apply interest to current account | Current account                | Operation rejected            | PASS   |
+| TC30    | Invalid interest rate             | Zero/negative rate             | Validation error              | PASS   |
+| TC31    | Frozen account interest           | Frozen account                 | Operation rejected            | PASS   |
+
+### 8. Admin Testing
+
+| Test ID | Test Case               | Input          | Expected Result               | Status |
+| ------- | ----------------------- | -------------- | ----------------------------- | ------ |
+| TC32    | View all accounts       | Admin login    | All accounts displayed        | PASS   |
+| TC33    | Freeze account          | Valid account  | Account status becomes FROZEN | PASS   |
+| TC34    | Unfreeze account        | Frozen account | Account status becomes ACTIVE | PASS   |
+| TC35    | Generate account report | Admin menu     | Account statistics displayed  | PASS   |
+
+### 9. Concurrency Testing
+
+| Test ID | Test Case                     | Input                                   | Expected Result                            | Status |
+| ------- | ----------------------------- | --------------------------------------- | ------------------------------------------ | ------ |
+| TC36    | Multiple concurrent transfers | Multiple transfer threads               | Transfers handled safely                   | PASS   |
+| TC37    | Concurrent balance update     | Simultaneous source/destination updates | No inconsistent partial transfer           | PASS   |
+| TC38    | Transaction rollback          | Forced transaction failure              | Database changes rolled back               | PASS   |
+| TC39    | Account locking               | Simultaneous access to same accounts    | Database locks prevent conflicting updates | PASS   |
+
+### 10. Input Validation Testing
+
+| Test ID | Test Case              | Input               | Expected Result                | Status |
+| ------- | ---------------------- | ------------------- | ------------------------------ | ------ |
+| TC40    | Invalid menu choice    | Non-existing option | Invalid choice message         | PASS   |
+| TC41    | Non-numeric menu input | Text                | Input rejected without crash   | PASS   |
+| TC42    | Invalid account input  | Text                | Valid account number requested | PASS   |
+| TC43    | Invalid monetary input | Text                | Valid amount requested         | PASS   |
+
+---
+
+## Test Summary
+
+| Category            |  Tests |
+| ------------------- | -----: |
+| Authentication      |      5 |
+| Account Management  |      4 |
+| Deposit             |      4 |
+| Withdrawal          |      4 |
+| Fund Transfer       |      5 |
+| Transaction History |      4 |
+| Interest            |      5 |
+| Admin               |      4 |
+| Concurrency         |      4 |
+| Input Validation    |      4 |
+| **Total**           | **43** |
+
+## Overall Result
+
+The CoreBank-Java-Project successfully implements and demonstrates the major functional requirements of the banking simulation. Authentication, account management, transaction processing, transaction history, interest handling, administrative operations, input validation, and concurrent transaction handling are implemented.
+
+The test cases provide coverage for both valid and invalid operations, including insufficient balance, frozen accounts, invalid inputs, concurrent transfers, and transaction rollback.
