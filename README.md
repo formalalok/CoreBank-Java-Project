@@ -1,556 +1,184 @@
-```markdown
+markdown
 # CoreBank-Java-Project
 
 ## Online Banking / Core Banking Simulation System
 
-A Java-based banking simulation system developed for **CSE2006 – Programming in Java**. The project demonstrates Object-Oriented Programming, JDBC database connectivity, exception handling, collections, multithreading, transaction management, password hashing, and input validation.
+A Java-based banking simulation system developed for **CSE2006 – Programming in Java**. The project demonstrates Object-Oriented Programming, JDBC, exception handling, multithreading, transaction management, SHA-256 password hashing, and input validation.
 
 ---
 
-## 1. Project Overview
+## Overview
 
-CoreBank-Java-Project simulates the basic operations of a real-world banking system.
+CoreBank-Java-Project simulates a real-world banking system with two user roles:
 
-The system provides separate interfaces for:
+- **Customer** — manage accounts, deposit, withdraw, transfer funds, view history, apply savings interest
+- **Administrator** — view all accounts, freeze/unfreeze accounts, generate reports and statistics
 
-* Customers
-* Administrators
-
-Customers can manage their accounts, perform banking transactions, and view transaction history. Administrators can manage account status and generate account reports.
+The system uses a layered architecture (UI → Service → DAO → MySQL) with JDBC, and enforces ACID-compliant fund transfers using database transactions and row-level locking.
 
 ---
 
-## 2. Main Features
+## Features
 
 ### Customer Module
-
-* Customer authentication
-* Account ownership validation
-* Balance checking
-* Deposit
-* Withdrawal
-* Fund transfer
-* Transaction history
-* Savings account interest calculation and application
-* Logout
+- Authentication and account ownership validation
+- Balance enquiry
+- Deposit, withdrawal, and fund transfer
+- Transaction history
+- Savings account interest calculation
 
 ### Admin Module
-
-* Administrator authentication
-* View all accounts
-* Freeze accounts
-* Unfreeze accounts
-* View account reports
-* View active and frozen account statistics
+- Authentication
+- View all accounts
+- Freeze / unfreeze accounts
+- Account reports and active/frozen statistics
 
 ### Security
-
-* SHA-256 password hashing
-* Role-based authentication
-* Account ownership validation
-* Input validation
-* Custom exception handling
+- SHA-256 password hashing (no plain-text storage)
+- Role-based access control
+- Account ownership validation
+- Input validation and custom exception handling
 
 ### Concurrency
-
-The system supports concurrent fund transfers using Java multithreading.
-
-Database transactions use:
-
-* `setAutoCommit(false)`
-* `commit()`
-* `rollback()`
-* `SELECT ... FOR UPDATE`
-* Deterministic account locking
-
-These mechanisms help maintain correct account balances when multiple transactions execute simultaneously.
+- Concurrent fund transfers using Java threads
+- Database transactions with `setAutoCommit(false)`, `commit()`, `rollback()`
+- Row-level locking with `SELECT ... FOR UPDATE`
+- Deterministic account-locking order to prevent deadlocks
 
 ---
 
-## 3. Technologies Used
+## Technologies Used
 
-| Technology        | Purpose                   |
-| ----------------- | ------------------------- |
-| Java              | Application development   |
-| MySQL             | Database                  |
-| JDBC              | Java-MySQL connectivity   |
-| MySQL Connector/J | JDBC driver               |
-| Java Threads      | Concurrent transactions   |
-| SHA-256           | Password hashing          |
-| CMD               | Compilation and execution |
-| MySQL Workbench   | Database management       |
-
----
-
-## 4. Java Concepts Demonstrated
-
-The project demonstrates the following concepts from Programming in Java:
-
-* Classes and Objects
-* Encapsulation
-* Inheritance through exception hierarchy
-* Constructors
-* Methods
-* Packages
-* Interfaces / layered design
-* Collections
-* Exception Handling
-* Custom Exceptions
-* JDBC
-* Multithreading
-* Synchronization through database locking
-* BigDecimal for financial calculations
-* Input validation
-* String and numeric processing
-* Role-based application flow
+| Technology | Purpose |
+|---|---|
+| Java | Application development |
+| MySQL | Database |
+| JDBC (MySQL Connector/J) | Java–MySQL connectivity |
+| Java Threads | Concurrent transactions |
+| SHA-256 | Password hashing |
+| BigDecimal | Financial arithmetic |
+| Windows CMD | Compilation and execution |
+| Git / GitHub | Version control |
 
 ---
 
-## 5. Project Architecture
-
-The project follows a layered architecture:
-
-```text
-User Interface
-|
-v
-Service Layer
-|
-v
-DAO Layer
-|
-v
-MySQL Database
-```
-
-### UI Layer
-
-Handles user interaction.
-
-```text
-Main
-CustomerMenu
-AdminMenu
-```
-
-### Service Layer
-
-Contains business logic.
-
-```text
-AuthService
-AccountService
-TransactionService
-InterestService
-AdminReportService
-```
-
-### DAO Layer
-
-Handles database operations.
-
-```text
-UserDAO
-CustomerDAO
-AccountDAO
-TransactionDAO
-```
-
-### Model Layer
-
-Represents application data.
-
-```text
-User
-Customer
-Account
-Transaction
-```
-
-### Utility Layer
-
-Contains reusable utilities.
-
-```text
-DBConnection
-PasswordUtil
-InputUtil
-```
-
-### Exception Layer
-
-Contains custom exceptions.
-
-```text
-AccountNotFoundException
-AccountFrozenException
-InsufficientBalanceException
-InvalidAmountException
-```
-
-### Concurrent Layer
-
-Handles concurrent transaction testing.
-
-```text
-TransferTask
-ConcurrencyTest
-```
-
----
-
-## 6. Database
-
-Database name:
-
-```text
-corebank
-```
-
-Tables:
-
-```text
-users
-customers
-accounts
-transactions
-```
-
-### Users
-
-Stores login credentials and user roles.
-
-### Customers
-
-Stores customer profile information.
-
-### Accounts
-
-Stores account number, type, balance, and account status.
-
-### Transactions
-
-Stores deposits, withdrawals, transfers, and interest transactions.
-
----
-
-## 7. Account Types
-
-The system supports:
-
-```text
-SAVINGS
-CURRENT
-```
-
-Interest calculation is available only for:
-
-```text
-SAVINGS
-```
-
-Accounts can have the following statuses:
-
-```text
-ACTIVE
-FROZEN
-```
-
----
-
-## 8. Transaction Types
-
-The system supports:
-
-```text
-DEPOSIT
-WITHDRAWAL
-TRANSFER
-INTEREST
-```
-
-Every successful transaction is recorded in the transaction history.
-
----
-
-## 9. Concurrency Handling
-
-Fund transfers are implemented using database transactions.
-
-The system locks both accounts before modifying their balances.
-
-The basic process is:
-
-```text
-Start Transaction
-|
-v
-Lock Source Account
-|
-v
-Lock Destination Account
-|
-v
-Check Balance and Status
-|
-v
-Update Both Balances
-|
-v
-Save Transaction
-|
-v
-Commit
-```
-
-If an error occurs:
-
-```text
-Rollback
-```
-
-This prevents incomplete transfers and helps maintain database consistency.
-
----
-
-## 10. Password Security
-
-Passwords are not stored as plain text.
-
-The project uses the SHA-256 hashing algorithm.
-
-```text
-Password
-|
-v
-SHA-256
-|
-v
-64-character hexadecimal hash
-|
-v
-Stored in MySQL
-```
-
-During login, the entered password is hashed and compared with the stored hash.
-
----
-
-## 11. Custom Exception Handling
-
-The project uses custom exceptions for common banking errors.
-
-Examples:
-
-```text
-AccountNotFoundException
-AccountFrozenException
-InsufficientBalanceException
-InvalidAmountException
-```
-
-This allows banking-related errors to be handled separately from normal program execution.
-
----
-
-## 12. Project Structure
-
-```text
+## Project Structure
 CoreBank-Java-Project
-│
 ├── README.md
-│
-├── lib
-│ └── mysql-connector-j-26.7.0.jar
-│
-├── src
-│ └── com
-│ └── corebank
-│ ├── model
-│ ├── dao
-│ ├── service
-│ ├── exception
-│ ├── util
-│ ├── concurrent
-│ └── ui
-│
-├── sql
-│ └── schemas.sql
-│
-├── docs
-│
-├── screenshots
-│
-└── out
-```
+├── statement.md
+├── lib/ # MySQL Connector/J driver
+├── src/com/corebank/
+│ ├── model/ # User, Customer, Account, Transaction
+│ ├── dao/ # Database access layer
+│ ├── service/ # Business logic
+│ ├── exception/ # Custom banking exceptions
+│ ├── util/ # DBConnection, PasswordUtil, InputUtil
+│ ├── concurrent/ # TransferTask, ConcurrencyTest
+│ └── ui/ # Main, CustomerMenu, AdminMenu
+├── sql/schema.sql # Database schema
+├── docs/ # Design documents
+└── screenshots/ # Application screenshots
+
+text
 
 ---
 
-## 13. Compilation
+## Setup and Installation
 
-Open Windows CMD and navigate to the project:
+### Prerequisites
+- JDK 17 or later
+- MySQL Server 8.x
+- MySQL Connector/J (`lib/mysql-connector-j-26.7.0.jar`)
+- Windows CMD
 
-```cmd
+### Database Setup
+1. Start MySQL Server.
+2. Open MySQL Workbench.
+3. Run the schema script:
+
+```sql
+SOURCE D:/CoreBank-Java-Project/sql/schema.sql;
+This creates the corebank database with four tables: users, customers, accounts, transactions.
+
+Compile
+cmd
 cd /d D:\CoreBank-Java-Project
-```
 
-Compile the project:
-
-```cmd
-javac -cp "lib\mysql-connector-j-26.7.0.jar" -d out src\com\corebank\util\*.java src\com\corebank\model\*.java src\com\corebank\exception\*.java src\com\corebank\dao\*.java src\com\corebank\service\*.java src\com\corebank\concurrent\*.java src\com\corebank\ui\*.java
-```
-
----
-
-## 14. Running the Application
-
-Run:
-
-```cmd
+javac -cp "lib\mysql-connector-j-26.7.0.jar" -d out ^
+  src\com\corebank\util\*.java ^
+  src\com\corebank\model\*.java ^
+  src\com\corebank\exception\*.java ^
+  src\com\corebank\dao\*.java ^
+  src\com\corebank\service\*.java ^
+  src\com\corebank\concurrent\*.java ^
+  src\com\corebank\ui\*.java
+Run
+cmd
 java -cp "out;lib\mysql-connector-j-26.7.0.jar" com.corebank.ui.Main
-```
+Test Accounts
+Role	Username	Password
+Customer	alok	alok123
+Administrator	admin	admin123
+Demo savings accounts: 1001001, 1001002
 
----
+Testing
+The system was validated through 14 test cases covering:
 
-## 15. Test Accounts
+Customer and admin login (valid and invalid credentials)
 
-### Customer
+Balance enquiry, deposit, withdrawal
 
-```text
-Username: alok
-Password: alok123
-Role: CUSTOMER
-```
+Fund transfer between active accounts
 
-### Administrator
+Insufficient balance handling
 
-```text
-Username: admin
-Password: admin123
-Role: ADMIN
-```
+Frozen account handling
 
----
+Invalid amount handling
 
-## 16. Current Demo Accounts
+Transaction history retrieval
 
-The project database contains two savings accounts associated with the customer profile.
+Admin freeze / unfreeze operations
 
-```text
-1001001
-1001002
-```
+Concurrent transfers of 500, 700, and 300 simultaneously
 
-The exact balances may change during transaction testing.
+Database rollback on simulated failure
 
----
+Concurrency Test
+cmd
+java -cp "out;lib\mysql-connector-j-26.7.0.jar" com.corebank.concurrent.ConcurrencyTest
+This launches multiple TransferTask threads against the same pair of accounts and verifies the ledger remains consistent (no lost updates, no deadlocks).
 
-## 17. Testing
+Architecture
+text
+User Interface  →  Service Layer  →  DAO Layer  →  MySQL Database
+(Main, Menus)      (Business)        (SQL)         (corebank)
+UI Layer — Main, CustomerMenu, AdminMenu
 
-The project has been tested for:
+Service Layer — AuthService, AccountService, TransactionService, InterestService, AdminReportService
 
-* User authentication
-* Customer login
-* Admin login
-* Balance checking
-* Fund transfers
-* Transaction history
-* Account freezing
-* Account unfreezing
-* Interest calculation
-* Concurrent transfers
-* Invalid input handling
-* Insufficient balance handling
-* Frozen account handling
-* Database rollback
+DAO Layer — UserDAO, CustomerDAO, AccountDAO, TransactionDAO
 
----
+Model Layer — User, Customer, Account, Transaction
 
-## 18. Concurrency Test
+Utility Layer — DBConnection, PasswordUtil, InputUtil
 
-The project includes a dedicated concurrency test:
+Exception Layer — AccountNotFoundException, AccountFrozenException, InsufficientBalanceException, InvalidAmountException
 
-```text
-ConcurrencyTest
-```
+Screenshots
+See the screenshots/ folder for:
 
-It creates multiple transfer threads simultaneously.
+Customer and admin login
 
-Example concurrent transfers:
+Customer menu and admin menu
 
-```text
-500 → Account 1001001 to 1001002
-700 → Account 1001001 to 1001002
-300 → Account 1001001 to 1001002
-```
+Deposit / transfer / transaction history
 
-The transaction service uses database locking and transactions to prevent inconsistent balance updates.
+Concurrency test output
 
----
+Documentation
+Detailed design artefacts, UML diagrams, ER diagram, and full test cases are provided in the project report (docs/Project_Report.docx) and in the docs/ folder.
 
-## 19. Database Consistency
-
-Fund transfers follow the ACID transaction approach.
-
-```text
-BEGIN
-|
-+-- Lock accounts
-|
-+-- Validate transaction
-|
-+-- Update source balance
-|
-+-- Update destination balance
-|
-+-- Record transaction
-|
-+-- COMMIT
-```
-
-If any operation fails:
-
-```text
-ROLLBACK
-```
-
----
-
-## 20. Project Objective
-
-The main objective of this project is to demonstrate how Java programming concepts can be combined to build a practical banking application.
-
-The project combines:
-
-```text
-Java OOP
-+
-JDBC
-+
-MySQL
-+
-Exception Handling
-+
-Multithreading
-+
-Database Transactions
-+
-Password Hashing
-```
-
----
-
-## 21. Conclusion
-
-CoreBank-Java-Project demonstrates the implementation of a practical banking simulation using Java and MySQL.
-
-The project focuses on modular software design, secure authentication, database connectivity, transaction management, exception handling, and concurrent fund transfers.
-
-It provides a practical application of concepts covered in **CSE2006 – Programming in Java**.
-```
-
-**How to use:**
-1. Copy everything between the triple backticks above (the entire Markdown content).
-2. Paste it into Notepad.
-3. Save the file as `README.md` (make sure the file type is "All Files", not .txt).
-4. Place it in the root of your GitHub repository.
+Author
+Alok Kumar — Registration No. 24BEC10141
+Course: CSE2006 – Programming in Java (VITyarthi)
